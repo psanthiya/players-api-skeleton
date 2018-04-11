@@ -1,0 +1,61 @@
+<% var title = 'Registration' %>
+<% include header %>
+ <script type="text/javascript">
+  function onSuccess(){
+    alert("User successfully created");
+  }
+</script>
+<nav class="navbar navbar-default">
+  	<div class="container-fluid">
+  		<div class="navbar-header">
+  			<a class="navbar-brand" href="#"><strong> Registration</strong></a>
+  		</div>
+  	</div>
+  </nav>
+
+<div class="container">
+<div class="col-sm-6 col-sm-offset-3">
+  <% if(locals.success){ %>
+       <script>onSuccess();</script>
+  <%}%>
+     <% if(locals.errors){ %>
+                   <ul>
+                       <div class="alert alert-danger">
+                   <% locals.errors.forEach(function( err){ %>
+
+                       <li> <%= err.msg %> </li>
+                   <% }) %>
+                     </div>
+                   </ul>
+
+               <%}%>
+               <form method="post" action="/register" >
+
+  <p>
+    <label>First Name:</label>
+    <input type="text" name="first_name">
+  </p>
+  <p>
+    <label>Last Name:</label>
+    <input type="text" name="last_name">
+  </p>
+  <p>
+    <label>Email:</label>
+    <input type="text" name="email">
+  </p>
+  <p>
+    <label>password:</label>
+    <input type="password" name="password">
+  </p>
+  <p>
+    <label>Confirm Password:</label>
+    <input type="password" name="confirm_password">
+  </p>
+  <p>
+    <input type="submit" value="Create User"/>
+     <input type="submit" value="Return to Login Page" formaction="/api/" formmethod="get"  />
+  </p>
+</form>
+</div>
+</div>
+<% include footer %>

@@ -1,0 +1,9 @@
+{
+
+    "clearExpiredSessionTime": 86400000,
+    "secretPassPhrase": "secretpasscode,should not be easy to guess",
+    "sessionTimeInMillis": 3600000,
+    "cookieMaxAgeInMillis": 3600000
+
+
+}

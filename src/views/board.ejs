@@ -1,0 +1,46 @@
+<% include header %>
+
+<nav class="navbar navbar-default">
+  	<div class="container-fluid">
+  		<div class="navbar-header">
+  			<a class="navbar-brand" href="#"><strong> Board</strong></a>
+  		</div>
+  	</div>
+  </nav>
+
+<div class="container">
+<div class="col-sm-6 col-sm-offset-3">
+<form>
+  <input type="hidden" name="token" value="{{token}}">
+
+ <div class="form-group">
+            <label>Available Players
+            <select class="selectpicker" data-style="btn-info" name="gridGeo" multiple>
+
+            <% if(players.length==0) { %>
+               <option >No Players</option>
+             <%} else {%>
+
+
+                  <option >
+                  <% players.forEach(function(player){ %>
+                  <option >
+                    <%= player.firstname %></option>
+                  <% }) %>
+
+             <% } %>
+             </select>
+             </label>
+              </div>
+              <div class="form-group">
+              			<input type="submit" value="Create New Player" formaction="/api/player" formmethod="get"  />
+
+
+                    <input type="submit" value="Play Match" formaction="/api/match" formmethod="get"  />
+
+              </div>
+
+</form>
+</div>
+</div>
+<% include footer %>
