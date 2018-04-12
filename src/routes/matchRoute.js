@@ -11,4 +11,7 @@ router.route("/matches")
 router.route('/matches/:playerId')
 		.get( matchHandler.getPlayerMatchDetails);
 
+router.route('/rankings')
+		.get( matchHandler.getRankings);
+
 module.exports = router;

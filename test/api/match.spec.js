@@ -9,7 +9,7 @@ const mongoose = require('mongoose');
 
 let token, user;
 
-describe('Player API', () => {
+describe('Match API', () => {
 
   before(async () => {
     await User.remove({});

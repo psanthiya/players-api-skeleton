@@ -3,6 +3,7 @@ var jwt = require('jsonwebtoken'),
 var Match = require('../../src/models/match');
 var Player = require('../../src/models/player');
 var ObjectId = require('mongoose').Types.ObjectId;
+var playerHandler = require('../../src/controllers/PlayerController');
 
 
 exports.createMatch =  async function(req, res,next) {
@@ -63,16 +64,61 @@ exports.getPlayerMatchDetails = async function(req, res) {
             if(matches.length === 0){
               return res.status(404).send({success: false, message: "player not found/player din't play any matches"});
             }
-            var totalGames = matches.length;
-            var winGames = [];
+            var totalMatches = matches.length;
+            var winningMatches = [];
             matches.forEach(match => {
                   if (match.matchwinner === playerId) {
-                    winGames.push(match);
+                    winningMatches.push(match);
                   }
                 });
-             var winPercent = (winGames.length/totalGames) * 100;
+             var winPercent = (winningMatches.length/totalMatches) * 100;
              var factor = Math.pow(10, 1);
              var winPercentRounded = Math.round(winPercent * factor) / factor;
-             return res.status(200).send({success: true, totalGamesPlayed: totalGames, totalGamesWon: winGames.length, winPercent: winPercentRounded });
+             return res.status(200).send({success: true, totalMatches: totalMatches, totalWins: winningMatches.length, winPercent: winPercentRounded });
           }
 };
+
+
+exports.getRankings = async function(req, res) {
+//Get all players
+//for each player get all matches
+//calculate winning percentage ( calculate total games and then win games)
+//arrange players based on the win percentage
+            var rankings = [];
+            var players = await Player.find({}).exec();
+            for(var player of players)  {
+             var matches = await Match.find({
+                              '$or': [{
+                                'firstPlayer': player.id
+                              }, {
+                                'secondPlayer': player.id
+                              }]
+                            });
+              var winningMatches = [];
+                          matches.forEach(match => {
+                                if (match.matchwinner === player.id) {
+                                  winningMatches.push(match);
+                                }
+                              });
+              var totalMatches = matches.length;
+              var totalWins = winningMatches.length;
+              var winPercent = (totalWins/totalMatches) * 100;
+              var factor = Math.pow(10, 1);
+              var winPercentRounded = Math.round(winPercent * factor) / factor;
+              var rank = 0;
+              var rankDetails = {player: player, winPercent: winPercent, rank: rank};
+              rankings.push(rankDetails);
+              //arrange players
+              rankings.sort(function(a, b) {
+                      return parseFloat(b.winPercent) - parseFloat(a.winPercent);
+                    });
+              for(var ranking of rankings){
+                ranking.rank = ++rank;
+              }
+
+            };
+            res.status(200).json({"rankings":rankings});
+
+};
+
+
