@@ -8,7 +8,7 @@ router.route('/match')
 router.route("/matches")
 		.get(matchHandler.getMatches);
 
-router.route('/match/:playerId')
+router.route('/matches/:playerId')
 		.get( matchHandler.getPlayerMatchDetails);
 
 module.exports = router;

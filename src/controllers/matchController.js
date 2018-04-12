@@ -11,7 +11,6 @@ exports.createMatch =  async function(req, res,next) {
              return res.status(403).send({success: false});
           } else {
             var user = jwt.decode(req.headers.authorization.slice(7));
-            console.log(user.id);
              var firstPlayer = await Player.findOne({_id: ObjectId(req.body.firstPlayer)});
              var secondPlayer = await Player.findOne({_id: ObjectId(req.body.secondPlayer)});
 
@@ -61,6 +60,9 @@ exports.getPlayerMatchDetails = async function(req, res) {
                    'secondPlayer': playerId
                  }]
                });
+            if(matches.length === 0){
+              return res.status(404).send({success: false, message: "player not found/player din't play any matches"});
+            }
             var totalGames = matches.length;
             var winGames = [];
             matches.forEach(match => {
