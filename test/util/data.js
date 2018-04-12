@@ -20,5 +20,16 @@ module.exports = {
     last_name: 'Boll',
     rating: 8000,
     handedness: 'right'
-  }
+  },
+  match1: {
+    firstPlayerScore: 100,
+    secondPlayerScore: 90
+      },
+  match2: {
+      firstPlayer: "5aced226a7dd3215ad05cd83",
+      secondPlayer:  "5aced226a7dd3215ad05dd83",
+      firstPlayerScore: 34,
+      secondPlayerScore: 55,
+      matchwinner: "5aced226a7dd3215ad05dd83"
+    }
 };

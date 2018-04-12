@@ -9,20 +9,30 @@ var user = new mongoose.Schema({
   last_name: String,
   email: {
     type: String,
-   // unique: true,
+    unique: true,
     lowercase: true,
     trim: true
    // required: true
   },
-  hash_password: {
+  password: {
    type: String
    }
 });
 
-user.methods.comparePassword = function(password) {
-console.log(password + this.hash_password);
-  return bcrypt.compareSync(password, this.hash_password);
-};
+
+user.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+user.set('toJSON', {
+  virtuals: true
+});
+
+/*
+user.set('toObject', {
+  virtuals: true
+});
+*/
+
 
 /*user.methods.comparePassword = function(password) {
 //bcrypt.compare(password, this.password, function(err, isMatch) {

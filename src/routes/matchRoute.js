@@ -1,15 +1,14 @@
 var express = require('express');
 var router = express.Router();
+var matchHandler = require('../../src/controllers/matchController.js');
 
-var path = require('path');
+router.route('/match')
+		.post( matchHandler.createMatch);
 
-router.get('/match', function (req, res) {
-    //res.render("match");
-   // res.sendFile('../../src/views/match.html');
-   //res.sendFile('./src/views/pingpong.html');
-         res.sendFile(path.resolve('./src/views/match.html'));
+router.route("/matches")
+		.get(matchHandler.getMatches);
 
-   //res.render("match");
-});
+router.route('/match/:playerId')
+		.get( matchHandler.getPlayerMatchDetails);
 
 module.exports = router;

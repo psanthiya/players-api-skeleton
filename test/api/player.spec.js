@@ -2,6 +2,7 @@ const _ = require('lodash');
 const server = require('../../src/server');
 const { User, Player } = require('../../src/models');
 const data = require('../util/data');
+const mongoose = require('mongoose');
 
 let token, user;
 
@@ -183,9 +184,11 @@ describe('Player API', () => {
 
     it('should fail if player does not exist', async () => {
       let res, error;
+      var id = mongoose.Types.ObjectId();
+
       try {
         res = await chai.request(server)
-          .delete('/api/players/1')
+          .delete('/api/players/'+id)
           .set('Authorization', `Bearer ${ token }`);
       } catch (err) {
         error = err;

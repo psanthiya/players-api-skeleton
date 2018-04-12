@@ -1,12 +1,17 @@
 var mongoose = require('mongoose');
 
 var player = new mongoose.Schema({
-  firstname: {
+  first_name: {
    type: String,
    trim: true,
-   required: true
+   required: true,
+   unique: true
   },
-  lastname: String,
+  last_name: {
+     type: String,
+                trim: true,
+                required: true
+  },
   rating: {
     type: String,
    // unique: true,
@@ -14,9 +19,19 @@ var player = new mongoose.Schema({
     trim: true
    // required: true
   },
-  handedness: {
-   type: String
-   }
+    handedness: {
+    type: String,
+    required: true,
+    enum: ['left', 'right'] },
+   created_by: { type: String }
+
+});
+player.virtual('id').get(function() {
+  return this._id.toHexString();
+});
+
+player.set('toJSON', {
+  virtuals: true
 });
 
 
