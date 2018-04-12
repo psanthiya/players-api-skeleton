@@ -13,7 +13,7 @@ var player = new mongoose.Schema({
                 required: true
   },
   rating: {
-    type: String,
+    type: Number,
    // unique: true,
     lowercase: true,
     trim: true

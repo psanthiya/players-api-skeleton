@@ -30,9 +30,10 @@ exports.createMatch =  async function(req, res,next) {
 
                                             });
                                           } else {
-                                            return res.status(201).json( {success: true, match: match});
+                                            res.status(201).json( {success: true, match: match});
+                                            deriveRating(firstPlayer,secondPlayer, match );
                                             }
-                                        })
+                                        });
                   }
                 }
 };
@@ -121,4 +122,109 @@ exports.getRankings = async function(req, res) {
 
 };
 
+var deriveRating = async function(firstPlayer, secondPlayer, match )
+{
+var pointSpread;
+var firstPlayerRating = firstPlayer.rating;
+var secondPlayerRating = secondPlayer.rating;
+var highRatedPlayer;
 
+//calculate point spread and identify high rated player
+ if (firstPlayerRating > secondPlayerRating) {
+    pointSpread = firstPlayerRating - secondPlayerRating;
+    highRatedPlayer = firstPlayer;
+  } else {
+    pointSpread = secondPlayerRating - firstPlayerRating;
+    highRatedPlayer = secondPlayer;
+  }
+  var exchangePoints = getExchangedPoints(pointSpread, highRatedPlayer, match.matchwinner);
+  var calculatedRating;
+  if(firstPlayer.id === match.winner){
+    calculatedRating = firstPlayer.rating + exchangePoints.valueOf();
+  } else {
+    calculatedRating = secondPlayer.rating + exchangePoints.valueOf();
+  }
+  var updatePlayer ;
+  if(match.matchwinner === firstPlayer.id){
+    updatePlayer = firstPlayer;
+  } else {
+    updatePlayer = secondPlayer;
+  }
+
+    var query = { _id: updatePlayer.id};
+           var update = updatePlayer;
+           update.id = match.matchwinner;
+           update.rating = calculatedRating.valueOf();
+           var options = { new: true, upsert: true };
+           var user = await Player.findOneAndUpdate(query, update, options);
+
+};
+
+
+function getExchangedPoints(pointSpread, highRatedPlayer, winner){
+var exchangePoints =0;
+    if ( pointSpread >= 0 && pointSpread < 12) {
+      exchangePoints = 8;
+    } else if ( pointSpread >= 13 && pointSpread < 37) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 7;
+      } else {
+        exchangePoints = 10;
+      }
+    } else if (pointSpread >= 38 && pointSpread < 62) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 6;
+      } else {
+        exchangePoints = 13;
+      }
+    } else if (pointSpread >= 63 && pointSpread < 87) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 5;
+      } else {
+        exchangePoints = 16;
+      }
+    } else if (pointSpread >= 88  && pointSpread < 112) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 4;
+      } else {
+        exchangePoints = 20;
+      }
+    } else if (pointSpread >= 113  && pointSpread < 137) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 3;
+      } else {
+        exchangePoints = 25;
+      }
+    } else if (pointSpread >= 138  && pointSpread < 162) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 2;
+      } else {
+        exchangePoints = 30;
+      }
+    } else if (pointSpread >= 163  && pointSpread < 187) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 2;
+      } else {
+        exchangePoints = 35;
+      }
+    } else if (pointSpread >= 188 && pointSpread < 212) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 1;
+      } else {
+        exchangePoints = 40;
+      }
+    } else if (pointSpread >= 213  && pointSpread < 237) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 1;
+      } else {
+        exchangePoints = 45;
+      }
+    } else if (pointSpread >= 238 ) {
+      if (highRatedPlayer === winner) {
+        exchangePoints = 0;
+      } else {
+        exchangePoints = 50;
+      }
+    }
+    return exchangePoints;
+}
