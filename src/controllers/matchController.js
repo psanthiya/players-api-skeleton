@@ -19,6 +19,8 @@ exports.createMatch = async function (req, res, next) {
         return res.status('409').send('Player  ' + req.body.firstPlayer + '/ ' + req.body.secondPlayer + '  not exists');
       } else if (firstPlayer.created_by != user.id || secondPlayer.created_by != user.id) {
         return res.status('409').send('Can\'t choose player created by other user');
+      } else if (req.body.matchwinner != req.body.firstPlayer && req.body.matchwinner != req.body.secondPlayer) {
+        return res.status('409').send('Match winner should be one among the two players.');
       } else {
         var matchObj = new Match(req.body);
         matchObj.createdBy = user.id;
